@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLAMES Love Game</title>
+
+<!-- AUDIO -->
+<!-- ENGLISH -->
+<audio id="L_en" src="songs/en/Ed Sheeran - PerfectG.mp3"></audio>
+<audio id="F_en" src="songs/en/Marshmello _ FriendG.mp3"></audio>
+<audio id="A_en" src="songs/en/Said The Sky _ AffectionG.mp3"></audio>
+<audio id="M_en" src="songs/en/Alex Warren - Ordinary G.mp3"></audio>
+<audio id="E_en" src="songs/en/Imagine Dragons - EnemyG.mp3"></audio>
+<audio id="S_en" src="songs/en/sister songG.mp3"></audio>
+<!-- TAMIL -->
+<audio id="L_ta" src="songs/tam/Theethiriyaai Love G.mp3"></audio>
+<audio id="F_ta" src="songs/tam/friendship songG.mp3"></audio>
+<audio id="A_ta" src="songs/tam/Ambikapathy - Love song .mp3"></audio>
+<audio id="M_ta" src="songs/tam/msong.mp3"></audio>
+<audio id="E_ta" src="songs/tam/Prayer  Enemy Song .mp3"></audio>
+<audio id="S_ta" src="songs/tam/Kannil Anbai Sister G.mp3"></audio>
+<!-- HINDI -->
+<audio id="L_hi" src="songs/hi/love.mp3"></audio>
+<audio id="F_hi" src="songs/hi/friend.mp3"></audio>
+<audio id="A_hi" src="songs/hi/affection.mp3"></audio>
+<audio id="M_hi" src="songs/hi/marriage.mp3"></audio>
+<audio id="E_hi" src="songs/hi/enemy.mp3"></audio>
+<audio id="S_hi" src="songs/hi/sister.mp3"></audio>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+
+html{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#ff5f7e,#ff9a9e);
+  min-height:100%;
+  transition:background 0.8s ease;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+html::-webkit-scrollbar,body::-webkit-scrollbar{ display:none; }
+
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding:20px 16px 40px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+
+.theme-love    {background:linear-gradient(135deg,#ff4b6e,#ff758c)!important;}
+.theme-friend  {background:linear-gradient(135deg,#36d1dc,#5b86e5)!important;}
+.theme-affection{background:linear-gradient(135deg,#ff9a9e,#fad0c4)!important;}
+.theme-marriage{background:linear-gradient(135deg,#f7971e,#ffd200)!important;}
+.theme-enemy   {background:linear-gradient(135deg,#232526,#ff416c)!important;}
+.theme-sister  {background:linear-gradient(135deg,#a18cd1,#fbc2eb)!important;}
+
+.heart{position:fixed;pointer-events:none;z-index:0;font-size:16px;line-height:1;}
+.heart-blast{position:fixed;pointer-events:none;z-index:0;font-size:10px;line-height:1;}
+
+#share-btn{
+  position:absolute;
+  top:14px; right:14px;
+  width:38px; height:38px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  border:1.5px solid rgba(255,255,255,0.5);
+  color:white;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:background 0.2s, transform 0.2s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  padding:0;
+  z-index:10;
+}
+#share-btn svg{ width:17px; height:17px; }
+#share-btn:hover{ background:rgba(255,255,255,0.45); transform:scale(1.1); }
+#share-btn:active{ transform:scale(0.95); }
+
+#mute-btn{
+  position:absolute;
+  top:14px; left:14px;
+  width:38px; height:38px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  border:1.5px solid rgba(255,255,255,0.5);
+  color:white;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:background 0.2s, transform 0.2s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  padding:0;
+  z-index:10;
+}
+#mute-btn svg{ width:18px; height:18px; }
+#mute-btn:hover{ background:rgba(255,255,255,0.45); transform:scale(1.1); }
+#mute-btn:active{ transform:scale(0.95); }
+#mute-btn.muted{ background:rgba(255,255,255,0.45); }
+
+#share-toast{
+  position:fixed;
+  bottom:30px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:rgba(0,0,0,0.7);
+  color:white;
+  font-family:'Poppins',sans-serif;
+  font-size:13px; font-weight:600;
+  padding:10px 22px;
+  border-radius:30px;
+  opacity:0;
+  transition:opacity 0.3s, transform 0.3s;
+  pointer-events:none;
+  z-index:99;
+  white-space:nowrap;
+}
+#share-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+.card{
+  background:transparent;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  padding:clamp(20px,5vw,32px) clamp(16px,5vw,28px);
+  border-radius:40px;
+  box-shadow:none;
+  border:2px solid rgba(255,255,255,0.5);
+  width:100%;
+  max-width:400px;
+  text-align:center;
+  position:relative;
+  z-index:3;
+  margin:0 auto;
+  flex-shrink:0;
+}
+
+.card h1{font-size:clamp(22px,6vw,30px);color:white;font-weight:800;margin-bottom:clamp(10px,3vw,16px);letter-spacing:1px;}
+
+.lang-btn{
+  background:rgba(255,255,255,0.25);color:white;border:none;
+  padding:clamp(6px,2vw,10px) clamp(12px,3vw,18px);
+  border-radius:10px;cursor:pointer;font-family:'Poppins',sans-serif;
+  font-size:clamp(12px,3vw,14px);font-weight:600;transition:all 0.2s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.lang-btn.active-lang{background:white;color:#ff4b6e;transform:scale(1.05);}
+
+input{
+  width:100%;padding:clamp(10px,3vw,14px) clamp(12px,4vw,18px);
+  border-radius:14px;border:none;outline:none;
+  font-family:'Poppins',sans-serif;font-size:clamp(13px,3.5vw,15px);
+  background:rgba(255,255,255,0.85);margin-bottom:10px;
+  transition:background 0.2s;-webkit-appearance:none;
+}
+input:focus{background:white;}
+
+/* prevent layout jump when mobile keyboard opens */
+@supports(height: 100dvh){
+  body{ min-height:100dvh; }
+}
+
+#play{
+  background:linear-gradient(135deg,#ff4b6e,#ff758c);color:white;border:none;
+  padding:clamp(11px,3vw,14px) 0;border-radius:14px;width:100%;
+  font-family:'Poppins',sans-serif;font-size:clamp(14px,4vw,16px);
+  font-weight:700;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;
+  box-shadow:0 4px 15px rgba(255,75,110,0.4);letter-spacing:0.5px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+#play:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,75,110,0.5);}
+#play:active{transform:scale(0.97);}
+#play:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+#countdown-strip{margin-top:16px;padding:12px 8px;background:rgba(255,255,255,0.15);border-radius:40px;display:none;}
+
+#tiles-row{display:flex;justify-content:center;gap:clamp(5px,2vw,10px);flex-wrap:wrap;align-items:center;padding:4px 0;}
+
+.tile{
+  width:clamp(40px,10vw,52px);height:clamp(36px,9vw,48px);
+  position:relative;display:flex;align-items:center;justify-content:center;
+  transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.35s,filter 0.35s;
+  flex-shrink:0;
+}
+.tile svg.heart-svg{position:absolute;top:0;left:0;width:100%;height:100%;}
+.tile .tile-letter{
+  position:relative;z-index:2;font-size:clamp(12px,3vw,15px);font-weight:800;
+  color:white;line-height:1;margin-top:clamp(3px,1vw,6px);pointer-events:none;
+  text-shadow:0 1px 3px rgba(0,0,0,0.25);transition:color 0.3s,font-size 0.5s;
+}
+
+.heart-left,.heart-right{fill:#ff6b8a;transition:fill 0.4s;}
+.crack-line{opacity:0;stroke:#8b0030;stroke-width:2px;stroke-dasharray:50;stroke-dashoffset:50;fill:none;filter:drop-shadow(0 0 2px #ff003c);}
+
+.tile.counting{transform:scale(1.28) translateY(-5px);z-index:3;filter:drop-shadow(0 6px 14px rgba(255,30,100,0.75));}
+.tile.counting .heart-left,.tile.counting .heart-right{fill:#ff1f6e;}
+.tile.counting .tile-letter{color:white;}
+
+.tile.eliminated{opacity:0.6;transform:scale(0.82);}
+.tile.eliminated .heart-left,.tile.eliminated .heart-right{fill:#9b0035;}
+.tile.eliminated .heart-left{animation:breakLeft 0.55s cubic-bezier(0.22,1.4,0.5,1) forwards;}
+.tile.eliminated .heart-right{animation:breakRight 0.55s cubic-bezier(0.22,1.4,0.5,1) forwards;}
+.tile.eliminated .crack-line{animation:crackAppear 0.35s 0.05s ease forwards;}
+.tile.eliminated .tile-letter{color:rgba(255,255,255,0.3);}
+
+@keyframes breakLeft{0%{transform:translate(0,0) rotate(0deg)}30%{transform:translate(-3px,-2px) rotate(-6deg)}100%{transform:translate(-8px,3px) rotate(-18deg)}}
+@keyframes breakRight{0%{transform:translate(0,0) rotate(0deg)}30%{transform:translate(3px,-2px) rotate(6deg)}100%{transform:translate(8px,3px) rotate(18deg)}}
+@keyframes crackAppear{0%{opacity:0;stroke-dashoffset:50}60%{opacity:1;stroke-dashoffset:10}100%{opacity:1;stroke-dashoffset:0}}
+
+/* WINNER REVEAL */
+.tile.hide-tile{display:none!important;}
+
+#tiles-row.reveal-mode{justify-content:center;align-items:center;min-height:clamp(120px,35vw,180px);}
+
+#tiles-row.reveal-mode .tile:not(.hide-tile){
+  width:clamp(100px,30vw,140px);height:clamp(92px,27vw,128px);
+  transition:width 0.5s cubic-bezier(0.34,1.56,0.64,1),height 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+#tiles-row.reveal-mode .tile:not(.hide-tile) .tile-letter{
+  font-size:clamp(26px,8vw,38px);margin-top:clamp(8px,3vw,14px);
+}
+
+.tile.building{animation:buildPulse 0.45s infinite alternate;}
+@keyframes buildPulse{0%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(255,30,80,0.5))}100%{transform:scale(1.12);filter:drop-shadow(0 0 28px rgba(255,30,80,1))}}
+
+.tile.reveal-pop{animation:revealPop 0.65s cubic-bezier(0.22,1.5,0.36,1) forwards!important;}
+@keyframes revealPop{
+  0%  {transform:scale(0.1);opacity:0.3;filter:drop-shadow(0 0 0px rgba(255,30,80,0));}
+  60% {transform:scale(1.25);opacity:1;filter:drop-shadow(0 0 30px rgba(255,30,80,1));}
+  80% {transform:scale(0.95);}
+  100%{transform:scale(1);filter:drop-shadow(0 0 18px rgba(255,30,80,0.7));}
+}
+
+.tile.final-beat{animation:finalBeat 0.85s infinite!important;}
+@keyframes finalBeat{0%,100%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(255,30,80,0.5))}35%{transform:scale(1.15);filter:drop-shadow(0 0 30px rgba(255,30,80,1))}65%{transform:scale(1.07);filter:drop-shadow(0 0 18px rgba(255,30,80,0.7))}}
+
+.result-box{font-size:clamp(18px,5vw,26px);font-weight:800;color:white;margin-top:14px;min-height:32px;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all 0.4s;}
+.result-box.show{animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes popIn{0%{transform:scale(0.5);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* ===== RESULT GIF OVERLAY ===== */
+#gif-overlay{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  pointer-events:none;
+}
+.gif-emoji{
+  font-size:clamp(80px,25vw,160px);
+  line-height:1;
+  animation:gifPop 0.4s cubic-bezier(0.34,1.8,0.64,1) forwards;
+}
+@keyframes gifPop{
+  0%  {transform:scale(0) rotate(-20deg);opacity:0;}
+  60% {transform:scale(1.3) rotate(5deg);opacity:1;}
+  100%{transform:scale(1) rotate(0deg);opacity:1;}
+}
+.gif-ripple{
+  position:absolute;
+  width:clamp(120px,35vw,220px);
+  height:clamp(120px,35vw,220px);
+  border-radius:50%;
+  border:4px solid rgba(255,255,255,0.5);
+  animation:rippleOut 1s ease-out infinite;
+  pointer-events:none;
+}
+.gif-ripple:nth-child(2){animation-delay:0.3s;}
+.gif-ripple:nth-child(3){animation-delay:0.6s;}
+@keyframes rippleOut{
+  0%  {transform:scale(0.5);opacity:1;}
+  100%{transform:scale(2.5);opacity:0;}
+}
+.gif-text{
+  font-family:'Poppins',sans-serif;
+  font-size:clamp(18px,5vw,28px);
+  font-weight:800;
+  color:white;
+  margin-top:16px;
+  text-shadow:0 2px 12px rgba(0,0,0,0.3);
+  animation:gifTextSlide 0.5s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+  letter-spacing:1px;
+}
+@keyframes gifTextSlide{
+  0%  {transform:translateY(30px);opacity:0;}
+  100%{transform:translateY(0);opacity:1;}
+}
+.gif-overlay-bg{
+  position:absolute;
+  top:0;left:0;width:100%;height:100%;
+  opacity:0.92;
+  animation:bgFadeIn 0.3s ease forwards;
+}
+@keyframes bgFadeIn{
+  0%  {opacity:0;}
+  100%{opacity:0.92;}
+}
+/* overlay exit */
+#gif-overlay.exit{
+  animation:overlayExit 0.5s ease forwards;
+}
+@keyframes overlayExit{
+  0%  {opacity:1;transform:scale(1);}
+  100%{opacity:0;transform:scale(1.08);}
+}
+#compat-pct{ font-size:clamp(32px,9vw,44px); font-weight:800; color:white; text-shadow:0 2px 10px rgba(0,0,0,0.15); display:block; }
+
+
+/* ===== HEART CURSOR ===== */
+*{ cursor: none !important; }
+#heart-cursor{
+  position:fixed;
+  pointer-events:none;
+  z-index:99999;
+  font-size:22px;
+  line-height:1;
+  transform:translate(-50%,-50%);
+  transition:transform 0.05s ease;
+  filter:drop-shadow(0 0 4px rgba(255,75,110,0.7));
+  user-select:none;
+}
+.cursor-trail{
+  position:fixed;
+  pointer-events:none;
+  z-index:99998;
+  font-size:12px;
+  line-height:1;
+  transform:translate(-50%,-50%);
+  user-select:none;
+  animation:trailFade 0.6s ease forwards;
+}
+@keyframes trailFade{
+  0%  { opacity:0.9; transform:translate(-50%,-50%) scale(1); }
+  100%{ opacity:0;   transform:translate(-50%,-50%) scale(0.2) translateY(-18px); }
+}
+#caution-overlay{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#caution-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+}
+#caution-box{
+  position:relative;
+  z-index:1;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1.5px solid rgba(255,255,255,0.45);
+  border-radius:24px;
+  padding:32px 28px 26px;
+  max-width:320px;
+  width:88%;
+  text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,0.3);
+  animation:cautionPop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes cautionPop{
+  0%  {transform:scale(0.65);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
+}
+#caution-icon{
+  font-size:48px;
+  margin-bottom:10px;
+  animation:cautionBounce 0.6s 0.3s cubic-bezier(0.34,1.8,0.64,1) both;
+}
+@keyframes cautionBounce{
+  0%  {transform:translateY(-12px);opacity:0;}
+  100%{transform:translateY(0);opacity:1;}
+}
+#caution-title{
+  font-family:'Poppins',sans-serif;
+  font-size:20px;
+  font-weight:800;
+  color:white;
+  margin-bottom:10px;
+  text-shadow:0 2px 8px rgba(0,0,0,0.2);
+  letter-spacing:0.3px;
+}
+#caution-body{
+  font-family:'Poppins',sans-serif;
+  font-size:14px;
+  font-weight:500;
+  color:rgba(255,255,255,0.9);
+  line-height:1.65;
+  margin-bottom:22px;
+  text-shadow:0 1px 4px rgba(0,0,0,0.15);
+}
+#caution-ok{
+  background:white;
+  color:#ff4b6e;
+  border:none;
+  border-radius:14px;
+  padding:11px 36px;
+  font-family:'Poppins',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform 0.15s, box-shadow 0.15s;
+  box-shadow:0 4px 16px rgba(255,75,110,0.35);
+  -webkit-tap-highlight-color:transparent;
+}
+#caution-ok:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,75,110,0.45); }
+#caution-ok:active{ transform:scale(0.96); }
+
+#caution-cancel{
+  position:absolute;
+  top:-13px;
+  right:-13px;
+  background:white;
+  color:#ff4b6e;
+  border:none;
+  border-radius:50%;
+  width:28px;
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  transition:background 0.2s, transform 0.15s;
+  -webkit-tap-highlight-color:transparent;
+  padding:0;
+  line-height:1;
+}
+#caution-cancel:hover{ background:#ffe0e6; transform:scale(1.1); }
+#caution-cancel:active{ transform:scale(0.9); }
+
+#caution-progress-bar{
+  width:100%;
+  height:4px;
+  background:rgba(255,255,255,0.2);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:18px;
+}
+#caution-progress-fill{
+  height:100%;
+  width:100%;
+  background:rgba(255,255,255,0.85);
+  border-radius:4px;
+  transform-origin:left;
+  transform:scaleX(1);
+}
+
+/* ===== CENTERED ALERT MODAL ===== */
+#alert-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+#alert-overlay.active{ display:flex; }
+
+#alert-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+
+#alert-box{
+  position:relative;
+  z-index:1;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,255,255,0.45);
+  border-radius:20px;
+  padding:28px 28px 22px;
+  max-width:320px;
+  width:88%;
+  text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  animation:alertPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  overflow:visible;
+}
+@keyframes alertPop{
+  0%{transform:scale(0.7);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
+}
+
+#alert-icon{font-size:36px;display:block;margin-bottom:10px;}
+#alert-msg{
+  color:white;
+  font-family:'Poppins',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  line-height:1.5;
+  margin-bottom:18px;
+  text-shadow:0 1px 4px rgba(0,0,0,0.2);
+}
+
+
+#alert-cancel{
+  position:absolute;
+  top:-14px;
+  right:-14px;
+  background:white;
+  color:#ff4b6e;
+  border:none;
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  transition:background 0.2s, transform 0.15s;
+  -webkit-tap-highlight-color:transparent;
+  padding:0;
+  line-height:1;
+}
+#alert-cancel:hover{ background:#ffe0e6; transform:scale(1.1); }
+#alert-cancel:active{ transform:scale(0.9); }
+
+/* SMALL PHONES */
+@media(max-width:360px){
+  .card{padding:18px 14px;border-radius:20px;}
+  .tile{width:36px;height:33px;}
+  .tile .tile-letter{font-size:11px;margin-top:3px;}
+  #tiles-row{gap:5px;}
+}
+
+/* LANDSCAPE MOBILE */
+@media(max-height:500px) and (orientation:landscape){
+  body{align-items:flex-start;padding:8px 16px;}
+  .card{padding:12px 18px;max-width:520px;}
+  .card h1{font-size:18px;margin-bottom:6px;}
+  input{padding:8px 12px;margin-bottom:6px;}
+  #play{padding:8px 0;}
+  .tile{width:36px;height:33px;}
+  #tiles-row{gap:6px;}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="hearts-canvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:1;"></canvas>
+<div id="share-toast"></div>
+
+<!-- RESULT GIF OVERLAY -->
+<div id="gif-overlay">
+  <div class="gif-overlay-bg" id="gif-bg"></div>
+  <div class="gif-ripple"></div>
+  <div class="gif-ripple"></div>
+  <div class="gif-ripple"></div>
+  <div class="gif-emoji" id="gif-emoji"></div>
+  <div class="gif-text" id="gif-text"></div>
+</div>
+<!-- CAUTION SOUND ALERT (shown on page load) -->
+<div id="caution-overlay">
+  <div id="caution-backdrop"></div>
+  <div id="caution-box">
+    <button id="caution-cancel">✕</button>
+    <div id="caution-icon">🔊</div>
+    <div id="caution-title">Hey guys!</div>
+    <div id="caution-body">This game includes sound effects.<br>Please mute your device if you're in public.<br>Thankyou
+    </div>
+    <div id="caution-progress-bar"><div id="caution-progress-fill"></div></div>
+    <button id="caution-ok">Got it!</button>
+  </div>
+</div>
+
+<!-- CENTERED ALERT MODAL -->
+<div id="alert-overlay">
+  <div id="alert-backdrop"></div>
+  <div id="alert-box">
+    <button id="alert-cancel">✕</button>
+    <span id="alert-icon">⚠️</span>
+    <div id="alert-msg">Please enter both names</div>
+  </div>
+</div>
+
+<div class="card">
+
+  <!-- MUTE BUTTON -->
+  <button id="mute-btn" title="Mute">
+    <svg id="mute-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+    </svg>
+  </button>
+
+  <!-- SHARE BUTTON -->
+  <button id="share-btn" title="Share">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+  </button>
+
+  <h1 style="font-size:28px;color:white;font-weight:800;margin-bottom:14px;letter-spacing:1px;">❤️ FLAMES</h1>
+
+  <!-- LANGUAGE BUTTONS -->
+  <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;">
+    <button class="lang-btn" data-lang="english">EN</button>
+    <button class="lang-btn" data-lang="tamil">TA</button>
+    <!-- <button class="lang-btn" data-lang="hindi">HI</button> -->
+  </div>
+
+  <input id="name1" placeholder="Your Name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <input id="name2" placeholder="Partner Name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+  <script>
+  // allow only letters and spaces in name inputs
+  ["name1","name2"].forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener("input", function(){
+      var cleaned = this.value.replace(/[^a-zA-Z\u0B80-\u0BFF\u0900-\u097F\s]/g,"");
+      if(this.value !== cleaned) this.value = cleaned;
+    });
+    el.addEventListener("keydown", function(e){
+      var k = e.key;
+      if(k.length === 1 && !/[a-zA-Z\u0B80-\u0BFF\u0900-\u097F\s]/.test(k)) e.preventDefault();
+    });
+  });
+  </script>
+
+  <button id="play">Check Love ❤️</button>
+
+
+
+  <!-- ====== COUNTDOWN STRIP ====== -->
+  <div id="countdown-strip">
+    <div id="tiles-row"></div>
+  </div>
+
+  <!-- COMPAT % — shown above result -->
+  <div class="result-box" id="result"></div>
+
+  <!-- PERSONALITY MESSAGE -->
+  <div id="personality" style="display:none;font-size:clamp(13px,3.5vw,15px);color:rgba(255,255,255,0.92);font-weight:500;margin-top:8px;line-height:1.5;text-shadow:0 1px 4px rgba(0,0,0,0.15);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);"></div>
+
+  <!-- COMPAT % at bottom -->
+  <div id="compat-wrap" style="display:none;margin-top:14px;">
+    <span id="compat-pct"></span>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="margin-top:24px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.2);font-size:12px;color:rgba(255,255,255,0.6);font-family:'Poppins',sans-serif;letter-spacing:0.3px;">
+    © <span id="copy-year"></span> <a href="https://guru-9403.github.io/Guru-Portfolio/" target="_blank" style="color:white;text-decoration:none;font-weight:600;">Guruprasath K</a>. All rights reserved.
+  </div>
+<script>document.getElementById("copy-year").textContent = new Date().getFullYear();</script>
+</div>
+
+<script>
+let selectedLang = "english";
+let currentN1 = "", currentN2 = "";
+
+$(".lang-btn").click(function(){
+  $(".lang-btn").removeClass("active-lang");
+  $(this).addClass("active-lang");
+  selectedLang = $(this).data("lang");
+});
+$(".lang-btn[data-lang='english']").addClass("active-lang");
+
+function stopAllSongs(){
+  $("audio").each(function(){ this.pause(); this.currentTime=0; });
+}
+function playFlamesSong(letter){
+  const lc = {english:"en", tamil:"ta", hindi:"hi"};
+  stopAllSongs();
+  const audio = document.getElementById(letter+"_"+lc[selectedLang]);
+  if(audio){ audio.muted = isMuted; audio.play(); }
+}
+
+const meaning={F:"Friends 🤝",L:"Love ❤️",A:"Affection 🥰",M:"Marriage 💍",E:"Enemy 😡",S:"Sister 👧"};
+const themeMap={F:"theme-friend",L:"theme-love",A:"theme-affection",M:"theme-marriage",E:"theme-enemy",S:"theme-sister"};
+const colorMap={L:"love",F:"friend",A:"affection",M:"marriage",E:"enemy",S:"sister"};
+
+const personality={
+  english:{
+    L:[
+      "You two are made for each other! 💘","Your hearts beat as one 🫀","This love story was written in the stars ✨","Head over heels — no turning back! 😍","Every moment with them feels like magic 🌙","You found your person 🥹","Love like this only happens once 💞","They make your heart skip a beat every time 💓","You're each other's favourite notification 📱❤️","The universe conspired to bring you two together 🌌","Can't stop smiling when they're around 😊","Your love language? Each other 💬","Run, don't walk, to the altar! 💒","They're the reason you believe in love again 🌹","Two hearts, one soul ❤️‍🔥","You'd choose them in every lifetime 🔄","The kind of love songs are written about 🎵","Your story deserves a movie 🎬","They complete you in ways you didn't know you needed 🧩","Butterflies? More like fireworks! 🎆","Love at its purest 🌸","This is the real deal 💍","You light up differently around them ✨","Forever feels possible with them 🕊️","Your heart knew before your mind did 🫶","They're your home, wherever you are 🏡","Some loves are rare — this is one of them 💎","They make ordinary days extraordinary 🌈","You'd cross oceans for them 🌊","This love is worth every risk 🎲"
+    ],
+    F:[
+      "Best buds forever! 🤜🤛","The kind of friendship that lasts a lifetime 🌟","You just GET each other 😄","Partners in crime, always! 🕶️","Ride or die — literally 🛵","The friend you didn't know you needed 🤗","Squad goals, right here 🙌","They'd help you move a body, no questions asked 😂","Your therapist, comedian, and alibi 😅","Real ones are rare — hold onto this 💎","Built different friendship right here 🔥","They know your worst and still stay 💙","Inside jokes for days 😂","The chaos in your life has a name 🤪","Still laughing at the same jokes years later 😂","Your 3am emergency contact 📞","They make the boring parts of life fun 🎉","Loyalty level: unmatched 🏅","Together you two are unstoppable 💥","The Bestie™ 👑","You don't need words around them 🤫","Grew up together, got weird together 🧃","Same brain, different bodies 🧠","Friends like this don't come twice 💫","The one who shows up without being asked 🚗","A friendship built to last centuries 🏛️","They're in your contact list as 'Person' ❤️","Life's better with them in it 🌞","Friendship so good it feels illegal 😎","The kind of bond that can't be explained 🔗"
+    ],
+    A:[
+      "There's something special between you two 🌸","Warm feelings you just can't ignore 🥰","A soft spot that keeps growing 💓","You care more than you admit 😊","That lingering feeling you can't shake 🌀","Somewhere between friends and more 😶‍🌫️","You notice things about them no one else does 👀","Affection speaks louder than words here 💌","A warmth that stays long after they're gone 🕯️","You smile at their name on your screen 📱","Small gestures, big feelings 💝","You check on them more than you admit 🔍","The kind of care that asks for nothing back 🤍","A gentle love that doesn't rush 🌿","Your face gives it away every time 😳","An unspoken bond that everyone notices 🙈","The soft kind of love — the best kind 🍃","You'd do anything for them, quietly 🤫","Affection deep enough to feel like home 🏠","They're on your mind more than you know 🌙","You protect their peace without being asked 🛡️","The feeling that stays even when they're not there 🌬️","Care without condition — that's rare 🌷","Your actions speak louder than any words 💬","A love that blooms slowly and beautifully 🌺","They bring out your soft side 🐣","Something about them just feels right ✨","You'd drop everything for them in a second ⏱️","Affection this pure is hard to find 🫧","The love you didn't see coming 🌠"
+    ],
+    M:[
+      "Wedding bells are ringing! 💒","Someone's getting a ring! 💍","Together forever sounds just right 🥂","Your forever person — found! 🎊","Till death do us part? Absolutely 💀❤️","Congratulations on finding your person 🎉","Now go pick a venue! 🏰","The in-laws are going to love you 😂","Happily ever after starts now 👑","You two are endgame 🏁","Next stop: honeymoon 🏝️","A love built to last generations 🌳","Your future kids are going to be adorable 👶","The vows practically write themselves 📜","Better start a joint account 💳","Two become one — officially 🤝","A love story worth framing 🖼️","Your grandchildren will tell this story 👴👵","Date nights become every night 🕯️","You found your safe place ⚓","From strangers to soulmates 🌍","The universe said — yes, you two ✅","You're each other's greatest adventure 🗺️","A bond too strong for words 🔐","Grow old together and be annoying about it 😄","A forever kind of feeling 🌙","This is what people write songs about 🎶","The love that makes everything worth it 💫","You're home for each other 🏡","Build a life — you've got the right partner 🧱"
+    ],
+    E:[
+      "Yikes... keep your distance! ⚔️","Opposites that really clash 😤","Not every story is a love story 🚩","Better as strangers, honestly 👀","Some people just bring out the chaos in us 🌪️","A rivalry for the ages 🏴‍☠️","You two together? Disaster waiting to happen 💣","Not enemies exactly... but definitely not friends 😬","The energy between you two is TENSE 😅","You'd both win in separate rooms 😂","Strong personalities, zero chill 🔥","History between you two? Complicated 📖","Frenemies at best 😒","That person you love to hate 😏","You bring out the worst in each other — own it 😈","Some connections aren't meant to be peaceful ☠️","Two alphas, one too many 🦁","The drama you didn't ask for 🎭","Side-eye energy off the charts 👁️","Things said, things felt, things unforgiven 🌩️","A storm whenever you're in the same room ⛈️","Competition level: aggressive 🥊","You'd win more fights apart 🏆","The kind of tension they make movies about 🎬","Not enemies? Then why the attitude? 😅","History repeating itself 🔁","You bring out each other's sharpest edges 🔪","Love and hate are closer than you think 🔴","Some people just aren't compatible — and that's okay 🤷","Distance is your greatest ally here 🛤️"
+    ],
+    S:[
+      "Pure sibling energy! 👧","Protective, caring, always there 🤗","The sibling you never had 💜","Family vibes, no doubt about it 🏠","The annoying but irreplaceable one 😂","Unconditional love, sibling edition 💝","You'd fight for each other in a heartbeat ❤️","That person who knows TOO much about you 😅","The human diary you didn't ask for 📔","Bicker like siblings, love like family 🔄","You're in each other's corner, always 🥊","The friend who became family 🌳","Sibling relationship but make it iconic 👑","You'd embarrass each other publicly with love 😂","The one who tells you the hard truths 💬","Overprotective? Just a little 🛡️","You complete each other's sentences 🗣️","A bond that started in another life 🌙","You're on the same team, always 🤝","The sibling bond no one can break 🔗","They'd give you their last slice of pizza 🍕","Loyalty that runs deeper than blood 🫀","You'd die of embarrassment but still love them 😳","The one you'd call first in any crisis 📞","Some people are just family without the paperwork 📜","The chaos partner who keeps you grounded 🌍","Love language: roasting each other 😂","You've seen each other at your worst — still here 💪","A connection that feels like coming home 🏡","Sisters/brothers by choice, forever by heart 💜"
+    ]
+  },
+  tamil:{
+    L:[
+      "நீங்கள் இருவரும் ஒன்றே! 💘","உங்கள் காதல் விதியில் எழுதப்பட்டது ✨","இதயங்கள் ஒன்றாக துடிக்கின்றன 🫀","திரும்பவே வேண்டாம்! 😍","அவர்களுடன் இருக்கும் ஒவ்வொரு தருணமும் மாயம் 🌙","உன் மனிதனை கண்டுபிடித்துவிட்டாய் 🥹","இந்த காதல் ஒரு முறைதான் வரும் 💞","அவர்கள் பெயரைப் பார்க்கும்போது நெஞ்சு பட்டென்று அடிக்கும் 💓","காதல் கீதங்கள் உங்களுக்காகவே எழுதப்பட்டன 🎵","இரண்டு இதயங்கள், ஒரே உயிர் ❤️‍🔥","ஒவ்வொரு ஜென்மத்திலும் உன்னையே தேர்வு செய்வேன் 🔄","உன் முகம் அவர்களை பார்க்கும்போது மாறுகிறது ✨","என்றும் என்னிடம் இருப்பாரா என்று தெரியும் 🕊️","காதல் என்பது இதுதான் 🌸","அவர்கள் உன் வாழ்க்கையின் நிறைவு 🧩","உன் இதயம் மனசிற்கு முன்பே தெரிந்துக்கொண்டது 🫶","அவர்கள் உன் வீடு, எங்கிருந்தாலும் 🏡","இந்த காதல் அரிதானது 💎","சாதாரண நாட்களை அசாதாரணமாக மாற்றுகிறார்கள் 🌈","கடலையும் தாண்டுவாய் அவர்களுக்காக 🌊","இந்த காதல் எல்லா ரிஸ்க்கையும் தாண்டும் 🎲","வண்ணவண்ண கனவுகள் அவர்களோடு மட்டுமே 🌈","இவர்களோடு வாழ்க்கை அர்த்தம் பெறுகிறது 🌟","அவர்கள் வரும்போது உன் கண்கள் பளிச்சிடுகின்றன 👀","என்றும் மாறாத ஒரு காதல் இது 💫","இரவு தூக்கம் வராவிட்டால் காரணம் அவர்களே 🌙","ஒன்றாக இருக்கும் நேரம் எப்போதும் குறைவாகவே தெரியும் ⏳","அவர்கள் புன்னகைக்க நீ புன்னகைக்கிறாய் 😊","இந்த உணர்வை வார்த்தைகளில் சொல்ல முடியாது 💬","ஆமா, இது காதல்தான் ❤️"
+    ],
+    F:[
+      "என்றும் நண்பர்கள்! 🤜🤛","ஆயுள் முழுவதும் நீடிக்கும் நட்பு 🌟","உங்களுக்குள் ஒரு பிணைப்பு இருக்கு 😄","எப்போதும் சேர்ந்தே இருப்பீர்கள்! 🕶️","உண்மையான நண்பர்கள் அரிதானவர்கள் 💎","உன் மோசமான நேரத்திலும் நிற்கும் நண்பர் 💙","உன் 3 மணி நேர அவசரகால தொடர்பு 📞","சிரிப்பே உங்கள் மொழி 😂","உன்னையே மிகவும் புரிந்துகொள்ளும் நபர் 🧠","ஒரே brain, இரண்டு bodies 🧠","இல்லாத நேரத்தில் இல்லாமல் இருக்க மாட்டார்கள் 🚗","கூட்டு சேர்ந்து உலகை மாற்றுவோம் 💥","உன் வாழ்க்கை அவர்களால் சுவாரஸ்யமாகிறது 🎉","ஒரே jokes-ஐ பல வருஷம் கழித்தும் சிரிப்பீர்கள் 😂","இரவெல்லாம் பேசினாலும் சலிக்காது 🌙","அவர்களோடு இருக்கும்போது நீ நீயாக இருக்கலாம் 🌈","ஒப்பற்ற நட்பு 🏅","வார்த்தைகள் இல்லாமல் புரிந்துகொள்வீர்கள் 🤫","நட்பு என்பது இப்படித்தான் இருக்க வேண்டும் 🔗","ஒரே மாதிரி weird-ஆக வளர்ந்தவர்கள் 🧃","உன்னை யாரோ என்று தெரியும் ஆனால் நண்பன்தான் ❤️","கூட இருந்தாலும் தனிமை தெரியாது 🌞","இந்த நட்பு நூறு ஆண்டு நீடிக்கும் 🏛️","எத்தனை தூரம் இருந்தாலும் மனசு அருகே இருக்கும் 💫","நண்பனை கண்டுபிடிப்பது கஷ்டம் — நீ கண்டுபிடித்தாய் 🌟","உன் குழப்பங்களை சிரிப்பாக மாற்றுபவர் 😅","உன் வாழ்க்கையில் ஒளி இவர்கள்தான் 🕯️","ஒருவருக்கொருவர் ஆதரவு — எப்போதும் 🤝","இந்த நட்பு எந்த விலையும் கொடுத்து வாங்க முடியாது 💝","இவர்கள் உன் உலகம் 🌍"
+    ],
+    A:[
+      "உங்களுக்கிடையே ஒரு சிறப்பு உணர்வு 🌸","மறுக்க முடியாத அன்பு 🥰","நாளுக்கு நாள் வளரும் பாசம் 💓","நீங்கள் ஒப்புக்கொள்வதை விட அதிகமாக கவலைப்படுகிறீர்கள் 😊","அவர்களை நினைக்காமல் இருக்க முடியவில்லை 🌀","நண்பர்களுக்கும் அதிகமான உணர்வு 😶‍🌫️","யாரும் கவனிக்காத விஷயங்களை நீ கவனிக்கிறாய் 👀","அன்பு வார்த்தைகளை விட சத்தமாக பேசுகிறது 💌","அவர்கள் போன பிறகும் அந்த சூடு இருக்கும் 🕯️","அவர்கள் பெயரை phone-ல் பார்க்கும்போது சிரிக்கிறாய் 📱","சின்னச் சின்ன விஷயங்கள் பெரிய உணர்வுகளை தரும் 💝","மறைமுகமாக அதிகமாக கவலைப்படுகிறாய் 🔍","எந்த எதிர்பார்ப்பும் இல்லாத அன்பு 🤍","அவசரப்படாத மென்மையான காதல் 🌿","உன் முகம் காட்டிக்கொடுக்கிறது 😳","யாரும் பேசாத ஒரு பிணைப்பு 🙈","மிக மென்மையான அன்பு 🍃","யாருக்கும் தெரியாமல் எல்லாம் செய்வாய் 🤫","வீடு மாதிரி உணர வைக்கும் பாசம் 🏠","நீ நினைப்பதை விட அதிகமாக மனசில் இருக்கிறார்கள் 🌙","அவர்களின் அமைதியை பாதுகாக்கிறாய் 🛡️","அவர்கள் இல்லாத நேரத்திலும் உணர்வு இருக்கும் 🌬️","நிபந்தனையில்லா அன்பு 🌷","உன் செயல்கள் வார்த்தைகளை விட பேசுகின்றன 💬","மெதுவாக மலரும் அன்பு 🌺","உன் மென்மையான பக்கத்தை காட்டுகிறார்கள் 🐣","சரியாக இருக்கும் ஒரு உணர்வு ✨","ஒரு நொடியில் எல்லாவற்றையும் விட்டுவிடுவாய் ⏱️","இந்த அன்பு கண்டுபிடிக்க கஷ்டம் 🫧","எதிர்பார்க்காமல் வந்த காதல் 🌠"
+    ],
+    M:[
+      "திருமண மணி அடிக்கிறது! 💒","மோதிரம் வரப்போகிறது! 💍","என்றும் சேர்ந்திருப்பது சரியானது 🥂","உங்கள் என்றும் உரியவர் கிடைத்தார்! 🎊","இறுதி வரை சேர்ந்திருக்கும் காதல் 💀❤️","உன் மனிதரை கண்டுபிடித்தாய்! 🎉","venue தேர்வு செய்ய நேரம் வந்துவிட்டது! 🏰","மாமியார் வீட்டினர் மகிழ்ந்துவிடுவார்கள் 😂","சுகமான வாழ்வு இப்போது தொடங்குகிறது 👑","இந்த காதல் endgame 🏁","இனி ஒவ்வொரு நாளும் date night 🕯️","தலைமுறைகள் கடந்தும் நீடிக்கும் காதல் 🌳","உங்கள் குழந்தைகள் அழகாக இருப்பார்கள் 👶","சத்தியங்கள் தாமாகவே எழுதப்படுகின்றன 📜","கூட்டு கணக்கு திறக்க நேரம் வந்துவிட்டது 💳","இரண்டு ஒன்றாகும் தருணம் 🤝","சட்டகம் போட வேண்டிய காதல் கதை 🖼️","பேரன் பேத்தி சொல்லும் கதை இது 👴👵","அன்னியர்களிலிருந்து ஆத்மாக்களாக 🌍","பிரபஞ்சம் சொன்னது — ஆமா, இவர்கள்தான் ✅","மிகப்பெரிய சாகசம் இவர்களுடன் 🗺️","மட்டும் இல்லை — என்றும் 🔐","முதிர்ந்து அலட்டிக்கொள்ளுங்கள் 😄","வாழ்க்கை கட்டுங்கள் — சரியான துணை கிடைத்துவிட்டார் 🧱","ஒவ்வொரு நாளும் அவர்களை தேர்வு செய்வாய் 💫","இந்த அன்பு அனைத்தையும் மதிப்புள்ளதாக ஆக்குகிறது 💫","ஒன்றாக முதியோர் ஆவோம் 👴👵","உன் பாதுகாப்பான இடம் அவர்கள்தான் ⚓","இது வீடு — ஒருவருக்கொருவர் 🏡","என்றும் காதல் — என்றும் சேர்த்து ❤️"
+    ],
+    E:[
+      "கொஞ்சம் தூரமாக இருங்கள்! ⚔️","இவர்கள் எப்போதும் மோதுவார்கள் 😤","இது காதல் கதை இல்லை 🚩","அன்னியர்களாக இருப்பதே நல்லது 👀","சில உறவுகள் chaos-ஐ மட்டுமே தரும் 🌪️","காலங்காலமான போட்டி 🏴‍☠️","இருவரும் சேர்ந்தால் — சேதம் நிச்சயம் 💣","எதிரி இல்லை — ஆனால் நண்பர் நிச்சயம் இல்லை 😬","இடையே உள்ள tension-ஐ கட்டுக்கடங்காது 😅","தனித்தனியாக இருந்தால் இருவரும் வெல்வார்கள் 😂","வலிமையான தன்னிலை, சூடு குறையாத மனம் 🔥","இடையே உள்ள வரலாறு சிக்கலானது 📖","frenemies என்று சொல்லலாம் 😒","காதலிக்கவும் வெறுக்கவும் ஒரே நேரத்தில் 😏","ஒருவர் இல்லாத அறையில் நீ வெல்வாய் 😂","அமைதியற்ற உறவு — திரைப்படம் ஆகும் 🎬","இரண்டு தலைவர்கள் — ஒரு மேடை சிறியது 🦁","கேட்காமலே கிடைத்த drama 🎭","பக்க விழிப்பு level: maximum 👁️","ஒரே அறையில் இருந்தால் புயல் நிச்சயம் ⛈️","போட்டி level: aggressive 🥊","வேறே வேறே இருந்தால் அதிக வெற்றி 🏆","காதலும் வெறுப்பும் ஒன்றுக்கு அருகே இருக்கும் 🔴","சிலர் இணக்கமற்றவர்கள் — அது சரிதான் 🤷","தூரம்தான் உன் மிகப்பெரிய நண்பன் 🛤️","சில தொடர்புகள் அமைதியற்றவை 😐","வார்த்தைகள் சொல்லப்பட்டன — மன்னிக்கப்படவில்லை 🌩️","ஒவ்வொரு அங்கத்தையும் கூர்மையாக்குகிறார்கள் 🔪","போரில் திறமை இருவருக்கும் சரிசமம் ⚔️","தொலைவு வாழ்க்கையை எளிதாக்கும் 🛤️"
+    ],
+    S:[
+      "அண்ணன் தங்கை உணர்வு! 👧","எப்போதும் பாதுகாக்கும் பாசம் 🤗","கிடைக்காத உடன்பிறப்பு 💜","குடும்ப உணர்வு நிறைந்தது 🏠","எரிச்சலூட்டும் — ஆனால் இல்லாமல் இருக்க முடியாத நபர் 😂","நிபந்தனையில்லா அன்பு 💝","ஒரே நொடியில் உனக்காக போர் புரிவார்கள் ❤️","உன்னைப் பற்றி அதிகமாகவே தெரிந்துக்கொண்டார்கள் 😅","நீ கேட்காமல் வந்து நிற்பார்கள் 🚗","சண்டையிட்டும் நேசிப்பார்கள் 🔄","எப்போதும் உன் பக்கம் இருப்பார்கள் 🥊","நண்பராக வந்து குடும்பமாகிவிட்டார் 🌳","வாழ்க்கையை embarrass பண்ணியும் நேசிப்பார்கள் 😂","கடினமான உண்மைகளை சொல்வார்கள் 💬","கொஞ்சம் அதிக பாதுகாப்பு — அது அன்பு 🛡️","முடிக்காத வாக்கியங்களை முடிப்பார்கள் 🗣️","முந்தைய ஜென்மத்தில் இருந்தே தொடங்கிய பிணைப்பு 🌙","உன் team — எப்போதும் 🤝","எந்த சக்தியாலும் உடைக்க முடியாத பந்தம் 🔗","Pizza last slice-ஐ கூட தருவார்கள் 🍕","அன்பு blood-ஐ விட ஆழமாக ஓடுகிறது 🫀","embarrass பண்ணியும் நேசிக்கிறார்கள் 😳","எந்த crisis-லும் முதல் தொடர்பு 📞","paperwork இல்லாமல் குடும்பம் 📜","சீரழிந்த நேரத்திலும் ground பண்ணுவார்கள் 🌍","roast பண்ணுவது love language 😂","மோசமான நேரத்திலும் இங்கே இருக்கிறார்கள் 💪","வீடு போல உணர வைக்கும் இணைப்பு 🏡","choice-ஆல் சகோதரர்கள் — என்றும் 💜","அவர்கள் உன் உலகம் — நீ அவர்கள் உலகம் 🌍"
+    ]
+  },
+  hindi:{
+    L:[
+      "तुम दोनों एक दूसरे के लिए बने हो! 💘","यह प्यार तकदीर में लिखा था ✨","दिल एक साथ धड़कते हैं 🫀","अब पीछे मुड़ना नहीं! 😍","उनके साथ हर पल जादू है 🌙","तुम्हारा इंसान मिल गया 🥹","यह प्यार ज़िंदगी में एक बार आता है 💞","उनका नाम देखते ही दिल धड़कता है 💓","यह प्यार गानों में लिखा जाता है 🎵","दो दिल, एक जान ❤️‍🔥","हर जन्म में तुम्हें ही चुनूँगा 🔄","तुम्हारा चेहरा उनके सामने बदल जाता है ✨","इस प्यार के लिए समंदर भी पार करोगे 🌊","यह सच्चा प्यार है 🌸","वो तुम्हारी पूर्णता हैं 🧩","तुम्हारे दिल को पहले से पता था 🫶","वो घर हैं — जहाँ भी हो 🏡","यह प्यार बहुत दुर्लभ है 💎","साधारण दिनों को खास बना देते हैं 🌈","तुम्हारी आँखें उनके पास चमकती हैं 👀","एक ऐसा प्यार जो कभी बदलता नहीं 💫","रात को नींद नहीं आती तो वजह वो हैं 🌙","साथ बिताया समय हमेशा कम लगता है ⏳","उनकी मुस्कान पर तुम मुस्कुराते हो 😊","यह एहसास शब्दों में बयान नहीं होता 💬","हाँ, यही प्यार है ❤️","उनकी आवाज़ सुनकर दिल खिल जाता है 🌸","तुम्हारी सबसे पसंदीदा notification वो हैं 📱❤️","हर ज़िंदगी में बस उन्हें ही चाहूँगा 🕊️","यह प्यार हर ख़तरे से बड़ा है 🎲"
+    ],
+    F:[
+      "हमेशा के लिए यार! 🤜🤛","जिंदगी भर चलने वाली दोस्ती 🌟","एक दूसरे को समझते हो बखूबी 😄","हर मुसीबत में साथ! 🕶️","सच्चे दोस्त बहुत कम होते हैं 💎","बुरे वक्त में भी जो साथ हो 💙","रात 3 बजे की मुश्किल में पहला call 📞","हँसी ही तुम्हारी भाषा है 😂","सबसे ज़्यादा तुम्हें समझने वाला 🧠","एक दिमाग दो शरीर 🧠","बिना कहे आ जाते हैं 🚗","मिलकर दुनिया बदलेंगे 💥","इनसे ज़िंदगी रंगीन हो जाती है 🎉","सालों बाद भी वही पुराने jokes पर हँसोगे 😂","रात भर बातें करो, कभी नहीं थकोगे 🌙","इनके साथ तुम खुद हो सकते हो 🌈","बेमिसाल दोस्ती 🏅","बिना बोले समझ जाते हैं 🤫","दोस्ती ऐसी ही होती है 🔗","साथ में अजीब बड़े हुए 🧃","जानते हैं तुम कौन हो — फिर भी साथ हैं ❤️","साथ हों तो अकेलापन नहीं 🌞","यह दोस्ती सौ साल टिकेगी 🏛️","दूरी हो तो भी दिल पास है 💫","दोस्त ढूँढना मुश्किल — तुमने ढूँढ लिया 🌟","तुम्हारी उलझनों को हँसी में बदलते हैं 😅","ज़िंदगी में रोशनी ये हैं 🕯️","एक-दूसरे का सहारा हमेशा 🤝","यह दोस्ती किसी कीमत पर नहीं मिलती 💝","यही तुम्हारी दुनिया हैं 🌍"
+    ],
+    A:[
+      "तुम दोनों के बीच कुछ खास है 🌸","अनदेखा करना मुश्किल है यह एहसास 🥰","रोज़ बढ़ता जा रहा है यह प्यार 💓","तुम जितना मानते हो उससे ज़्यादा परवाह है 😊","उन्हें सोचे बिना नहीं रह सकते 🌀","दोस्ती से कुछ ज़्यादा का एहसास 😶‍🌫️","वो बातें देखते हो जो कोई नहीं देखता 👀","अहसास बोलता है, शब्द नहीं 💌","वो चले जाने के बाद भी गर्माहट रहती है 🕯️","उनका नाम phone पर देखकर मुस्कुराते हो 📱","छोटी बातें बड़े एहसास देती हैं 💝","चुपचाप ज़्यादा परवाह करते हो 🔍","बिना शर्त का प्यार 🤍","जल्दी न करने वाला नाज़ुक प्यार 🌿","तुम्हारा चेहरा सब बता देता है 😳","जो कोई न जाने वो ये जानते हैं 🙈","सबसे कोमल प्यार 🍃","चुपचाप सब कर देते हो 🤫","घर जैसा एहसास दिलाती है यह परवाह 🏠","सोचते हो उनके बारे में ज़्यादा 🌙","उनकी शांति बचाते हो बिना बताए 🛡️","वो न हों तो भी एहसास रहता है 🌬️","बिना शर्त की परवाह 🌷","तुम्हारे काम बोलते हैं 💬","धीरे-धीरे खिलता प्यार 🌺","तुम्हारा नरम पहलू दिखाते हैं 🐣","कुछ सही लगता है उनके साथ ✨","एक पल में सब छोड़ दोगे उनके लिए ⏱️","यह अहसास मिलना मुश्किल है 🫧","जब उम्मीद न थी तब आया यह प्यार 🌠"
+    ],
+    M:[
+      "शादी की घंटियाँ बज रही हैं! 💒","अंगूठी आने वाली है! 💍","हमेशा साथ रहना ही सही लगता है 🥂","तुम्हारा जीवन साथी मिल गया! 🎊","मृत्यु तक साथ? बिल्कुल 💀❤️","अपने इंसान को पाने की बधाई 🎉","अब venue चुनो! 🏰","ससुराल वाले बहुत खुश होंगे 😂","खुशहाल ज़िंदगी अभी शुरू होती है 👑","यह प्यार endgame है 🏁","honeymoon की तैयारी करो 🏝️","पीढ़ियों तक चलने वाला प्यार 🌳","तुम्हारे बच्चे बहुत प्यारे होंगे 👶","शपथें खुद लिखी जाती हैं 📜","joint account खोलने का वक्त आ गया 💳","दो एक हो जाते हैं — आधिकारिक 🤝","जिसे frame करना चाहो वो love story 🖼️","पोते-पोती यह किस्सा सुनाएंगे 👴👵","date nights अब हर रात 🕯️","तुम्हारी safe जगह मिल गई ⚓","अजनबी से soulmate तक 🌍","ब्रह्मांड ने कहा — हाँ, यही हैं ✅","तुम्हारा सबसे बड़ा adventure ये हैं 🗺️","जो बंधन टूट न सके 🔐","बुढ़ापे में साथ अजीब लगना ज़रूरी है 😄","हमेशा के लिए वाला एहसास 🌙","जिस पर गाने लिखे जाते हैं 🎶","जो प्यार सब कुछ worth it बनाता है 💫","एक दूसरे का घर हो 🏡","सही साथी के साथ ज़िंदगी बनाओ 🧱"
+    ],
+    E:[
+      "दूर ही रहो इनसे! ⚔️","ये दोनों हमेशा टकराएंगे 😤","यह कोई प्यार की कहानी नहीं 🚩","अजनबी रहना ही बेहतर है 👀","कुछ रिश्ते सिर्फ chaos देते हैं 🌪️","युगों पुरानी दुश्मनी 🏴‍☠️","साथ हों तो तबाही तय है 💣","दुश्मन नहीं — पर दोस्त भी नहीं 😬","इनके बीच का tension काबू से बाहर है 😅","अलग-अलग रहें तो दोनों जीतेंगे 😂","मज़बूत ego, ज़ीरो chill 🔥","इतिहास जटिल है इनका 📖","frenemies कहना ज़्यादा सही है 😒","प्यार और नफरत एक साथ 😏","अकेले ज़्यादा लड़ाइयाँ जीतोगे 🏆","जो tension है वो फिल्मी है 🎬","दो alpha, एक छोटा stage 🦁","माँगा नहीं फिर भी drama मिला 🎭","side-eye energy off the charts 👁️","एक कमरे में आए तो तूफान आया ⛈️","competition level aggressive है 🥊","दूर रहो — दोनों के लिए फायदा 🛤️","प्यार और नफरत बेहद करीब हैं 🔴","सब compatible नहीं होते — ठीक है 🤷","दूरी ही सबसे बड़ा दोस्त है 🛤️","कुछ रिश्ते शांत नहीं होते 😐","बातें कही गई — माफ नहीं हुई 🌩️","एक दूसरे की धार तेज़ करते हैं 🔪","दोनों की लड़ाई बराबर है ⚔️","जो कहना था कहा — अब तक का हिसाब 📖"
+    ],
+    S:[
+      "भाई-बहन जैसा रिश्ता! 👧","हमेशा साथ देने वाला प्यार 🤗","वो भाई-बहन जो नहीं मिले थे 💜","परिवार जैसा एहसास 🏠","irritating पर अनमोल 😂","बिना शर्त का प्यार 💝","एक पल में लड़ने को तैयार तुम्हारे लिए ❤️","तुम्हारे बारे में सब कुछ जानते हैं 😅","बिना बुलाए आ जाते हैं 🚗","झगड़ते हैं फिर भी प्यार करते हैं 🔄","हमेशा तुम्हारी तरफ हैं 🥊","दोस्त बनकर आए, परिवार बन गए 🌳","embarrass करके भी प्यार करते हैं 😂","कड़वी सच्चाई बताते हैं 💬","थोड़ा ज़्यादा protect करते हैं — वो प्यार है 🛡️","अधूरे जुमले पूरे करते हैं 🗣️","पिछले जन्म से चली आती है यह बंधन 🌙","तुम्हारी team — हमेशा 🤝","जो तोड़ा नहीं जा सकता 🔗","आखिरी slice भी दे देंगे 🍕","प्यार खून से गहरा बहता है 🫀","शर्मिंदा करके भी चाहते हैं 😳","किसी भी crisis में पहला call 📞","बिना कागज़ के परिवार 📜","ज़मीन पर रखते हैं जब उड़ने लगो 🌍","roast करना love language है 😂","बुरे वक्त में भी यहाँ हैं 💪","घर जैसा एहसास देते हैं 🏡","चुनाव से भाई-बहन — दिल से हमेशा 💜","यही तुम्हारी दुनिया हैं 🌍"
+    ]
+  }
+};
+
+// ---- SPEED CONTROLS ----
+const TICK_DELAY   = 180;  // ms per tile highlight
+const ELIM_PAUSE   = 500;  // ms after elimination before next round
+const RESULT_PAUSE = 600;  // ms before showing text result
+
+/* ===== CAUTION SOUND MODAL — show on every page load ===== */
+(function(){
+  const overlay  = document.getElementById("caution-overlay");
+  const okBtn    = document.getElementById("caution-ok");
+  const cancelBtn= document.getElementById("caution-cancel");
+  const fill     = document.getElementById("caution-progress-fill");
+
+  function closeCaution(){
+    overlay.style.transition = "opacity 0.35s ease, transform 0.35s ease";
+    overlay.style.opacity    = "0";
+    overlay.style.transform  = "scale(1.04)";
+    setTimeout(()=>{ overlay.style.display = "none"; }, 360);
+  }
+
+  // start progress bar animation
+  fill.offsetHeight;
+  fill.style.transition = "transform 5s linear";
+  fill.style.transform  = "scaleX(0)";
+
+  // auto-close after 5s
+  const timer = setTimeout(closeCaution, 5000);
+
+  function closeNow(){
+    clearTimeout(timer);
+    closeCaution();
+  }
+
+  okBtn.addEventListener("click", closeNow);
+  cancelBtn.addEventListener("click", closeNow);
+})();
+
+/* ===== CENTERED ALERT FUNCTION ===== */
+function showAlert(msg){
+  const overlay = document.getElementById("alert-overlay");
+  const msgEl   = document.getElementById("alert-msg");
+  msgEl.textContent = msg;
+  overlay.classList.add("active");
+}
+
+function closeAlert(){
+  const overlay = document.getElementById("alert-overlay");
+  overlay.classList.remove("active");
+}
+
+document.getElementById("alert-cancel").addEventListener("click", closeAlert);
+document.getElementById("alert-backdrop").addEventListener("click", closeAlert);
+
+$("#play").click(function(){
+  let n1 = $("#name1").val().trim();
+  let n2 = $("#name2").val().trim();
+  if(!n1 || !n2){ showAlert("Please enter both names"); return; }
+  if(n1.toLowerCase().replace(/\s/g,"") === n2.toLowerCase().replace(/\s/g,"")){
+    showAlert("Please enter two different names");
+    return;
+  }
+
+  currentN1 = n1;
+  currentN2 = n2;
+  $("#result").text("").removeClass("show love friend affection marriage enemy sister");
+  document.getElementById("compat-wrap").style.display = "none";
+  document.getElementById("compat-pct").textContent = "";
+  document.getElementById("personality").style.display = "none";
+  document.getElementById("personality").textContent = "";
+  $("#tiles-row").removeClass("reveal-mode");
+  $(".tile").removeClass("hide-tile building reveal-pop final-beat");
+  $("#play").prop("disabled", true);
+  stopAllSongs();
+
+  // compute count
+  let a1 = n1.toLowerCase().replace(/\s/g,"").split("");
+  let a2 = n2.toLowerCase().replace(/\s/g,"").split("");
+  for(let i=0;i<a1.length;i++){
+    let idx = a2.indexOf(a1[i]);
+    if(idx !== -1){ a1[i]=''; a2[idx]=''; }
+  }
+  const count = (a1.join("")+a2.join("")).length;
+
+  // show strip
+  $("#countdown-strip").show();
+
+  // build tiles
+  const LETTERS = ['F','L','A','M','E','S'];
+  let flames = [...LETTERS];
+  const $row = $("#tiles-row").empty();
+  LETTERS.forEach(l => $row.append(`
+    <div class="tile" id="tile-${l}">
+      <svg class="heart-svg" viewBox="0 0 104 90" xmlns="http://www.w3.org/2000/svg">
+        <!-- left half of heart -->
+        <clipPath id="cp-left-${l}">
+          <rect x="0" y="0" width="52" height="90"/>
+        </clipPath>
+        <!-- right half of heart -->
+        <clipPath id="cp-right-${l}">
+          <rect x="52" y="0" width="52" height="90"/>
+        </clipPath>
+        <!-- full heart path clipped to left -->
+        <g clip-path="url(#cp-left-${l})">
+          <path class="heart-left" d="M52 80 C52 80 4 50 4 26 C4 12 14 4 26 4 C36 4 44 10 52 20 C60 10 68 4 78 4 C90 4 100 12 100 26 C100 50 52 80 52 80Z"/>
+        </g>
+        <!-- full heart path clipped to right -->
+        <g clip-path="url(#cp-right-${l})">
+          <path class="heart-right" d="M52 80 C52 80 4 50 4 26 C4 12 14 4 26 4 C36 4 44 10 52 20 C60 10 68 4 78 4 C90 4 100 12 100 26 C100 50 52 80 52 80Z"/>
+        </g>
+        <!-- crack line down the middle -->
+        <polyline class="crack-line" points="52,4 50,22 54,38 50,55 52,80"/>
+      </svg>
+      <span class="tile-letter">${l}</span>
+    </div>
+  `));
+
+  // ---- tick sound via Web Audio API ----
+  let audioCtx = null;
+  function playTick(){
+    if(isMuted) return;
+    try{
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.06);
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.09);
+    }catch(e){}
+  }
+
+  function playElimSound(){
+    if(isMuted) return;
+    try{
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.28);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.3);
+    }catch(e){}
+  }
+
+  let globalStep = 0;
+
+  // ---- animate countdown ----
+  function animateRound(currentIndex, stepCallback){
+    // we count 'count' steps from currentIndex, each step highlights a tile
+    let step = 0;
+    let idx = currentIndex;
+
+    function tick(){
+      // unhighlight previous
+      const prevLetter = flames[(idx + flames.length - 1) % flames.length]; // not always right, use tracked
+      $(".tile").removeClass("counting");
+
+      const letter = flames[idx % flames.length];
+      idx = idx % flames.length;
+      globalStep++;
+
+      $(`#tile-${letter}`).addClass("counting");
+      playTick();
+
+      step++;
+      if(step < count){
+        idx = (idx + 1) % flames.length;
+        setTimeout(tick, TICK_DELAY);
+      } else {
+        // eliminate this tile after a brief pause
+        setTimeout(()=>{
+          $(".tile").removeClass("counting");
+          $(`#tile-${letter}`).addClass("eliminated");
+          playElimSound();
+          flames.splice(idx, 1);
+
+          if(flames.length === 1){
+            // winner!
+            setTimeout(()=>{ stepCallback(idx, true, letter); }, ELIM_PAUSE);
+          } else {
+            // next round starts from same index (now pointing to next letter)
+            const nextIdx = idx % flames.length;
+            setTimeout(()=>{ stepCallback(nextIdx, false, letter); }, ELIM_PAUSE);
+          }
+        }, TICK_DELAY * 1.5);
+      }
+    }
+    tick();
+  }
+
+  function runRound(startIdx, done){
+    if(done) return;
+    animateRound(startIdx, function(nextIdx, finished){
+      if(finished){
+        showResult();
+      } else {
+        runRound(nextIdx, false);
+      }
+    });
+  }
+
+  function calcCompat(n1, n2){
+    // based on matching letters ratio + FLAMES result bonus
+    const a = n1.toLowerCase().replace(/\s/g,"");
+    const b = n2.toLowerCase().replace(/\s/g,"");
+    const all = (a+b).split("");
+    const unique = [...new Set(all)];
+    // matched pairs
+    let matched = 0;
+    const tmp = b.split("");
+    a.split("").forEach(c=>{ const i=tmp.indexOf(c); if(i!==-1){matched++;tmp[i]='';} });
+    // base score: ratio of matched to total unique
+    const base = Math.round((matched / Math.max(unique.length,1)) * 60) + 30;
+    // name length harmony bonus (closer lengths = more compatible)
+    const lenDiff = Math.abs(a.length - b.length);
+    const lenBonus = Math.max(0, 10 - lenDiff * 2);
+    // clamp between 22 and 99
+    return Math.min(99, Math.max(22, base + lenBonus));
+  }
+
+  const gifConfig = {
+    L:{ emoji:"❤️‍🔥", text:"LOVE!", bg:"linear-gradient(135deg,#ff1f6e,#ff6b9d)" },
+    F:{ emoji:"🤝",    text:"FRIENDS!", bg:"linear-gradient(135deg,#36d1dc,#5b86e5)" },
+    A:{ emoji:"🥰",    text:"AFFECTION!", bg:"linear-gradient(135deg,#ff85c0,#ffb3cc)" },
+    M:{ emoji:"💍",    text:"MARRIAGE!", bg:"linear-gradient(135deg,#f7971e,#ffd200)" },
+    E:{ emoji:"😡",    text:"ENEMY!", bg:"linear-gradient(135deg,#232526,#ff416c)" },
+    S:{ emoji:"👧",    text:"SISTER!", bg:"linear-gradient(135deg,#a18cd1,#fbc2eb)" }
+  };
+
+  function showGifOverlay(letter){
+    const cfg = gifConfig[letter];
+    const overlay = document.getElementById("gif-overlay");
+    const bg      = document.getElementById("gif-bg");
+    const emoji   = document.getElementById("gif-emoji");
+    const text    = document.getElementById("gif-text");
+
+    // reset
+    overlay.classList.remove("exit");
+    emoji.style.animation = "none";
+    text.style.animation  = "none";
+    emoji.offsetHeight; // reflow
+
+    bg.style.background = cfg.bg;
+    emoji.textContent   = cfg.emoji;
+    text.textContent    = cfg.text;
+
+    // restart animations
+    emoji.style.animation = "";
+    text.style.animation  = "";
+
+    overlay.style.display = "flex";
+
+    // dismiss after 2s
+    setTimeout(()=>{
+      overlay.classList.add("exit");
+      setTimeout(()=>{ overlay.style.display = "none"; }, 500);
+    }, 2000);
+  }
+
+  function showResult(){
+    const final = flames[0];
+    $(".tile").removeClass("counting");
+
+    // 1. hide all other tiles
+    $(".tile").not("#tile-"+final).addClass("hide-tile");
+
+    setTimeout(()=>{
+      $("#tiles-row").addClass("reveal-mode");
+
+      const $winner = $("#tile-"+final);
+      $winner.removeClass("eliminated winner");
+      $winner.find(".heart-left, .heart-right").css("fill","#ff1f6e");
+
+      // 2. start tiny and pulse for 2s
+      $winner.css({transform:"scale(0.15)", opacity:"0.4", transition:"none"});
+      $winner.addClass("building");
+
+      // 3. after 2s — zoom pop reveal
+      setTimeout(()=>{
+        $winner.removeClass("building");
+        $winner.css({transform:"", opacity:"", transition:""});
+        $winner.addClass("reveal-pop");
+
+        setTimeout(()=>{
+          $winner.removeClass("reveal-pop").addClass("final-beat");
+          $("#result").text(meaning[final]).addClass("show");
+
+          // personality message
+          const msgs = (personality[selectedLang] || personality.english)[final];
+          const msg  = msgs[Math.floor(Math.random()*msgs.length)];
+          const $p   = $("#personality");
+          $p.text(msg).css("display","block");
+
+          // fire GIF overlay
+          showGifOverlay(final);
+
+          playFlamesSong(final);
+          if(window.fireSkyshots) window.fireSkyshots();
+
+          // show compat meter with animated count-up
+          const pct = calcCompat(currentN1, currentN2);
+          const wrap = document.getElementById("compat-wrap");
+          const pctEl = document.getElementById("compat-pct");
+          wrap.style.display = "block";
+          pctEl.textContent = "0%";
+          let cur = 0;
+          const inc = Math.max(1, Math.ceil(pct/50));
+          const timer = setInterval(()=>{
+            cur = Math.min(cur+inc, pct);
+            pctEl.textContent = cur+"%";
+            if(cur >= pct) clearInterval(timer);
+          }, 28);
+          setTimeout(()=>{ wrap.scrollIntoView({behavior:"smooth", block:"nearest"}); }, 200);
+
+          $("#play").prop("disabled", false);
+        }, 700);
+
+      }, 2000);
+
+    }, 100);
+  }
+
+  // kick off
+  runRound(0, false);
+});
+
+/* ====== MUTE BUTTON ====== */
+let isMuted = false;
+
+const muteBtn  = document.getElementById("mute-btn");
+const muteIcon = document.getElementById("mute-icon");
+
+const speakerOn  = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>`;
+const speakerOff = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>`;
+
+muteBtn.addEventListener("click", function(){
+  isMuted = !isMuted;
+  muteIcon.innerHTML = isMuted ? speakerOff : speakerOn;
+  muteBtn.classList.toggle("muted", isMuted);
+  // mute/unmute any playing audio
+  document.querySelectorAll("audio").forEach(a => { a.muted = isMuted; });
+});
+
+/* ====== SHARE BUTTON — HASH LINK (works without server) ====== */
+
+// on page load: check URL hash and auto-fill + auto-play
+(function(){
+  const hash = window.location.hash.slice(1);
+  if(!hash) return;
+  try{
+    const data = JSON.parse(atob(hash));
+    if(data.n1) document.getElementById("name1").value = data.n1;
+    if(data.n2) document.getElementById("name2").value = data.n2;
+    if(data.lang){
+      $(".lang-btn").removeClass("active-lang");
+      $(`.lang-btn[data-lang="${data.lang}"]`).addClass("active-lang");
+      selectedLang = data.lang;
+    }
+    if(data.n1 && data.n2){
+      setTimeout(()=> document.getElementById("play").click(), 700);
+    }
+  }catch(e){}
+})();
+
+document.getElementById("share-btn").addEventListener("click", function(){
+  const n1    = document.getElementById("name1").value.trim();
+  const n2    = document.getElementById("name2").value.trim();
+  const toast = document.getElementById("share-toast");
+
+  function showToast(msg){
+    toast.innerText = msg;
+    toast.classList.add("show");
+    setTimeout(()=> toast.classList.remove("show"), 2800);
+  }
+
+  if(!n1 || !n2){ showToast("⚠️ Enter both names first!"); return; }
+
+  // encode names into base64 hash
+  const hash    = btoa(JSON.stringify({ n1, n2, lang: selectedLang }));
+  const liveUrl = window.location.href.split("#")[0] + "#" + hash;
+  const shareText = `💘 ${n1} + ${n2} — What does FLAMES say about us?\nFind out 👉 ${liveUrl}`;
+
+  if(navigator.share){
+    navigator.share({ title:"FLAMES 💘", text: shareText, url: liveUrl }).catch(()=>{});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(liveUrl)
+      .then(()=> showToast("✅ Link copied! Send to your partner 💕"))
+      .catch(()=>{ showToast("🔗 Copy this: " + liveUrl); });
+  } else {
+    showToast("✅ Share: " + liveUrl);
+  }
+});
+window.addEventListener("load", function(){
+  const canvas = document.getElementById("hearts-canvas");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+
+  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+  resize();
+  window.addEventListener("resize", resize);
+
+  const COLORS = ["#ff6b9d","#ff1f6e","#ffb3cc","#ffffff","#ff85c0","#ff4d7d","#ffd6e8"];
+
+  /* ---- 10 FLOATING HEARTS ---- */
+  function makeFloat(){
+    return {
+      x    : Math.random() * canvas.width,
+      y    : canvas.height + 20,
+      vy   : -(0.6 + Math.random() * 1.2),
+      vx   : (Math.random() - 0.5) * 0.5,
+      size : 10 + Math.random() * 12,
+      alpha: 0.4 + Math.random() * 0.5,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      sway : Math.random() * Math.PI * 2,
+      swaySpeed: 0.01 + Math.random() * 0.02
+    };
+  }
+  let floaters = Array.from({length:10}, ()=>{ const h=makeFloat(); h.y=Math.random()*canvas.height; return h; });
+
+  /* ---- 8 SKYSHOT ROCKETS — triggered on result only ---- */
+  function makeRocket(){
+    return {
+      x       : Math.random() * canvas.width,
+      y       : canvas.height + 20,
+      vx      : (Math.random() - 0.5) * 1.8,
+      vy      : -(8 + Math.random() * 5),
+      targetY : canvas.height * (0.08 + Math.random() * 0.35),
+      color   : COLORS[Math.floor(Math.random() * COLORS.length)],
+      size    : 16 + Math.random() * 8,
+      exploded: false,
+      done    : false,
+      particles: []
+    };
+  }
+  let rockets = [];
+
+  function explode(r){
+    r.exploded = true;
+    const n = 24 + Math.floor(Math.random() * 10);
+    for(let i=0;i<n;i++){
+      const angle = (Math.PI*2/n)*i + Math.random()*0.4;
+      const spd   = 2.5 + Math.random() * 4.5;
+      r.particles.push({
+        x:r.x, y:r.y,
+        vx:Math.cos(angle)*spd,
+        vy:Math.sin(angle)*spd - 1,
+        size :8 + Math.random()*8,
+        alpha:1,
+        decay:0.011 + Math.random()*0.011,
+        color:COLORS[Math.floor(Math.random()*COLORS.length)]
+      });
+    }
+  }
+
+  window.fireSkyshots = function(){
+    rockets = [];
+    for(let i=0;i<8;i++){
+      setTimeout(()=> rockets.push(makeRocket()), i * 220);
+    }
+  };
+
+  function loop(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    /* floaters */
+    while(floaters.length < 10) floaters.push(makeFloat());
+    floaters.forEach((h,i)=>{
+      h.sway += h.swaySpeed;
+      h.x += Math.sin(h.sway)*0.4 + h.vx;
+      h.y += h.vy;
+      if(h.y < -30){ floaters[i]=makeFloat(); return; }
+      ctx.globalAlpha = h.alpha;
+      ctx.fillStyle   = h.color;
+      ctx.font        = `${h.size}px serif`;
+      ctx.fillText("♥", h.x, h.y);
+    });
+
+    /* skyshots — no trail */
+    rockets = rockets.filter(r=>!r.done);
+    rockets.forEach(r=>{
+      if(!r.exploded){
+        r.x += r.vx; r.y += r.vy; r.vy += 0.1;
+        ctx.globalAlpha = 1;
+        ctx.fillStyle   = r.color;
+        ctx.font        = `${r.size}px serif`;
+        ctx.fillText("♥", r.x - r.size*0.5, r.y + r.size*0.5);
+        if(r.y <= r.targetY) explode(r);
+      } else {
+        let alive = false;
+        r.particles.forEach(p=>{
+          p.x+=p.vx; p.y+=p.vy; p.vy+=0.07; p.vx*=0.97;
+          p.alpha-=p.decay; p.size*=0.975;
+          if(p.alpha<=0) return;
+          alive = true;
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle   = p.color;
+          ctx.font        = `${Math.max(2,p.size)}px serif`;
+          ctx.fillText("♥", p.x-p.size*0.5, p.y+p.size*0.5);
+        });
+        if(!alive) r.done = true;
+      }
+    });
+
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+});
+
+</script>
+
+<!-- HEART CURSOR -->
+<div id="heart-cursor">💗</div>
+
+<script>
+/* ===== HEART CURSOR EFFECT ===== */
+(function(){
+  const cursor = document.getElementById("heart-cursor");
+  const HEARTS = ["💗","💓","💕","💖","💘","❤️","🩷"];
+  const TRAIL_COLORS = ["#ff4b6e","#ff758c","#ff85c0","#ffb3cc","#ff1f6e"];
+  let lastTrail = 0;
+  let mx = -100, my = -100;
+
+  document.addEventListener("mousemove", function(e){
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + "px";
+    cursor.style.top  = my + "px";
+
+    const now = Date.now();
+    if(now - lastTrail > 60){
+      lastTrail = now;
+      spawnTrail(mx, my);
+    }
+  });
+
+  document.addEventListener("mousedown", function(e){
+    cursor.style.transform = "translate(-50%,-50%) scale(1.5)";
+    burstHearts(e.clientX, e.clientY);
+    setTimeout(()=>{ cursor.style.transform = "translate(-50%,-50%) scale(1)"; }, 200);
+  });
+
+  function spawnTrail(x, y){
+    const el = document.createElement("div");
+    el.className = "cursor-trail";
+    el.textContent = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+    el.style.left = x + "px";
+    el.style.top  = y + "px";
+    el.style.fontSize = (8 + Math.random()*8) + "px";
+    el.style.opacity  = "0.85";
+    document.body.appendChild(el);
+    setTimeout(()=>{ el.remove(); }, 620);
+  }
+
+  function burstHearts(x, y){
+    for(let i=0;i<6;i++){
+      const el = document.createElement("div");
+      el.className = "cursor-trail";
+      el.textContent = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+      el.style.left     = x + "px";
+      el.style.top      = y + "px";
+      el.style.fontSize = (14 + Math.random()*10) + "px";
+      const angle = (Math.PI*2/6)*i;
+      const dist  = 30 + Math.random()*20;
+      el.style.transition = "left 0.4s ease, top 0.4s ease";
+      document.body.appendChild(el);
+      requestAnimationFrame(()=>{
+        el.style.left = (x + Math.cos(angle)*dist) + "px";
+        el.style.top  = (y + Math.sin(angle)*dist) + "px";
+      });
+      setTimeout(()=>{ el.remove(); }, 620);
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
