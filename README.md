@@ -35,7 +35,6 @@ A beautiful, interactive **FLAMES love calculator** built with pure HTML, CSS, a
 ```
    songs/en/   → English songs
    songs/tam/  → Tamil songs
-   songs/hi/   → Hindi songs
 ```
 3. Open `index.html` in your browser — no server needed!
 
